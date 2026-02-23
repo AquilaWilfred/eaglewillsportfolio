@@ -6,9 +6,7 @@ import { useImageUpload } from "@/hooks/useImageUpload";
 import { PortfolioData } from "@/data/portfolio";
 const box = { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "20px" };
 
-// GalleryEditor component — paste this into admin/page.tsx replacing the existing GalleryEditor function
 
-"REPLACE_MARKER"
 
 function GalleryEditor({ data, onRefresh }: { data: PortfolioData; onRefresh: () => Promise<void> }) {
   const [form, setForm] = useState({ title: "", category: "Web", tags: "" });
