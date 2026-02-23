@@ -1,3 +1,11 @@
+import { useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
+import { toast } from "sonner";
+import { Plus, Upload, Loader, Check, X, Trash2 } from "lucide-react";
+import { useImageUpload } from "@/hooks/useImageUpload";
+import { PortfolioData } from "@/data/portfolio";
+const box = { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "20px" };
+
 // GalleryEditor component — paste this into admin/page.tsx replacing the existing GalleryEditor function
 
 "REPLACE_MARKER"
