@@ -1,0 +1,41 @@
+import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase-server";
+import { isAuthenticated } from "@/lib/auth";
+
+export async function GET() {
+  const { data, error } = await supabase
+    .from("services")
+    .select("*")
+    .order("sort_order", { ascending: true });
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ data });
+}
+
+export async function POST(req: NextRequest) {
+  if (!isAuthenticated()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const body = await req.json();
+  const row = {
+    id: body.id || Date.now().toString(),
+    icon: body.icon || "🔧",
+    title: body.title,
+    description: body.description || "",
+    // Pricing per currency (stored as JSON)
+    prices: body.prices || { KSH: 0, USD: 0, EUR: 0, CNY: 0, GBP: 0 },
+    // Exchange rates to KSH (admin sets these - buying/selling)
+    exchange_rates: body.exchange_rates || {
+      USD: { buying: 129, selling: 131 },
+      EUR: { buying: 140, selling: 142 },
+      CNY: { buying: 18, selling: 19 },
+      GBP: { buying: 163, selling: 165 },
+    },
+    visible: body.visible !== false,
+    sort_order: body.sort_order || 0,
+    // Rich content fields
+    feasibility: body.feasibility || "",
+    planning: body.planning || "",
+    design_notes: body.design_notes || "",
+  };
+  const { data, error } = await supabase.from("services").upsert(row, { onConflict: "id" }).select().single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ data });
+}
